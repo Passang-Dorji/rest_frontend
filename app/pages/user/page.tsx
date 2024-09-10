@@ -182,8 +182,6 @@ export default function ListTables() {
                             </ul>
                         </div>
                     )}
-
-
                     <button
                         onClick={handleSubmit(onSubmit)}
                         className="border-2 border-purple-300 text-purple-600 mt-4 px-4 py-2 rounded-lg"
