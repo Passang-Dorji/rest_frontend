@@ -21,3 +21,11 @@ export const fetchOrder = async():Promise<{data:Order[]}>=>{
     }
     return response.json()
 }
+
+export const fetchOrderListWithItem = async(orderId:string):Promise<{data:OrderList[]}>=>{
+    const response = await fetch(`http://localhost:4000/api/order_lists?order_id=${orderId}`)
+    if(!response.ok){
+        throw new Error("failed to fetch")
+    }
+    return response.json()
+}

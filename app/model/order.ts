@@ -7,8 +7,10 @@ export interface Order{
 export interface OrderList{
     id:string,
     menu_item_id: string,
+    item_name: string;
     quantity:number,
     total_prices: number
+    price: number;
 }
 
 export interface OrderListItem {
