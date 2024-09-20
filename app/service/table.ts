@@ -13,7 +13,5 @@ export const fetchTable = async():Promise<{data:Table[]}>=>{
     if (!response.ok){
         throw new Error("failed to fetch")
     }
-    const data = await response.json()
-    console.log(data,"response data")
-    return data
+    return response.json()
 }

@@ -1,11 +1,13 @@
 import { Order,OrderList } from "../model/order";
 
-export const createOrder = async(order:object):Promise<{data:Order[] & OrderList[]}> =>{
-    const response = await fetch("http://localhost:4000/api/orders",{
+export const createOrder = async(order:object):Promise<{data:Order[] & OrderList[]}> =>{    
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`,{
         method:"POST",
         body:JSON.stringify(order),
         headers:{
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "ngrok-skip-browser-warning": "true",
+            Accept: "application/json",
         }
     })
     if(!response.ok){
@@ -15,7 +17,15 @@ export const createOrder = async(order:object):Promise<{data:Order[] & OrderList
 }
 
 export const fetchOrder = async():Promise<{data:Order[]}>=>{
-    const response = await fetch("http://localhost:4000/api/orders")
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`,
+    {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
     if(!response.ok){
         throw new Error("failed to fetch")
     }
@@ -23,7 +33,15 @@ export const fetchOrder = async():Promise<{data:Order[]}>=>{
 }
 
 export const fetchOrderListWithItem = async(orderId:string):Promise<{data:OrderList[]}>=>{
-    const response = await fetch(`http://localhost:4000/api/order_lists?order_id=${orderId}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/order_lists?order_id=${orderId}`,
+    {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
     if(!response.ok){
         throw new Error("failed to fetch")
     }
@@ -32,10 +50,12 @@ export const fetchOrderListWithItem = async(orderId:string):Promise<{data:OrderL
 
 export const updateOrder = async(orderId:string):Promise<{data:Order[]}>=>{
     const currentDateTime = new Date().toISOString();
-        const response = await fetch(`http://localhost:4000/api/orders/${orderId}`,{
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/${orderId}`,{
             method: 'PATCH', // Use PATCH for partial updates
             headers: {
-                'Content-Type': 'application/json',
+                "ngrok-skip-browser-warning": "true",
+                "Content-Type": "application/json",
+                Accept: "application/json",
             },
             body: JSON.stringify({order: { payed_at: currentDateTime} }),
              })

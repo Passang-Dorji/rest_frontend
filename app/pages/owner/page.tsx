@@ -12,7 +12,6 @@ export default function OrderList(){
         async function loadOrder() {
             try{
                 const data = await fetchOrder()
-                console.log(data, " my orders")
                 setOrders(data.data)
             }catch(error){
                 console.log("fetching error",error)
@@ -24,7 +23,6 @@ export default function OrderList(){
     async function loadOrderListWithItem(orderId:string) {
       try{
         const data = await fetchOrderListWithItem(orderId)
-        console.log(data,"my orderItems")
         setOrderItems(data.data)
         setModalOpen(true);
       }catch(error){

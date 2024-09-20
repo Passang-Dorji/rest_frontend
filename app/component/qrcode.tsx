@@ -33,7 +33,7 @@ const TableList = () => {
                 <p className="text-lg font-semibold text-gray-700 mb-4">Table ID: {table.id}</p>
                 <div className="flex justify-center">
                   <QRCodeCanvas
-                    value={`${process.env.NEXT_PUBLIC_BASE_URL}/pages/menu_items?restaurant_id=${table.restaurant_id}&table_number=${table.table_no}`}
+                    value={`${process.env.NEXT_PUBLIC_BASE_URL}/pages/menu_items?restaurant_id=${table.restaurant_id}&table_number=${table.table_no}&table_id=${table.id}`}
                     size={128}
                     className="mx-auto"
                   />
