@@ -29,3 +29,18 @@ export const fetchOrderListWithItem = async(orderId:string):Promise<{data:OrderL
     }
     return response.json()
 }
+
+export const updateOrder = async(orderId:string):Promise<{data:Order[]}>=>{
+    const currentDateTime = new Date().toISOString();
+        const response = await fetch(`http://localhost:4000/api/orders/${orderId}`,{
+            method: 'PATCH', // Use PATCH for partial updates
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({order: { payed_at: currentDateTime} }),
+             })
+        if (!response.ok){
+            throw new Error("failed to fetch")
+        }
+    return response.json()
+}

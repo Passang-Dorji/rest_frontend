@@ -1,7 +1,10 @@
 export interface Order{
     id:string,
+    table_no:string,
     session_id:string,
-    total_amount:number
+    total_amount:number,
+    ordered_at:string,
+    payed_at:Date
 }
 
 export interface OrderList{

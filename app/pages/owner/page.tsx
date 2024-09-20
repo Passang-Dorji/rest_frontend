@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { Order } from "@/app/model/order"
 import type { OrderList } from "@/app/model/order"
-import { fetchOrder , fetchOrderListWithItem} from "@/app/service/order"
+import { fetchOrder , fetchOrderListWithItem,updateOrder} from "@/app/service/order"
 export default function OrderList(){
     const [orders, setOrders] = useState<Order[]>([])
     const [orderItems, setOrderItems] = useState<OrderList[]>([])
@@ -12,6 +12,7 @@ export default function OrderList(){
         async function loadOrder() {
             try{
                 const data = await fetchOrder()
+                console.log(data, " my orders")
                 setOrders(data.data)
             }catch(error){
                 console.log("fetching error",error)
@@ -30,15 +31,29 @@ export default function OrderList(){
         console.log("fetching error",error)
       }
     }
-
     const closeModal = () => {
       setModalOpen(false);
       setOrderItems([]);
     };
 
+    async function loadUpdateOrder(orderId:string) {
+      try {
+        const updatedData = await updateOrder(orderId); // Assuming updateOrder returns the updated order
+        setOrders((prevOrders:any) =>
+          prevOrders.map((order) =>
+            order.id === updatedData.data.id ? updatedData.data : order
+          )
+        );
+      } catch (error) {
+        console.log("fetching error", error);
+      }
+    }
     return (
       <div className="container mx-auto p-4 relative">
         <h2 className="text-2xl font-bold text-white mb-6">Order List</h2>
+        {orders.length === 0 ? (
+      <p className="text-gray-300 text-lg">No orders available.</p>
+    ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {orders.map((order) => (
             <div
@@ -46,14 +61,38 @@ export default function OrderList(){
               key={order.id}
               onClick={() => loadOrderListWithItem(order.id)}
             >
-              <h3 className="text-xl font-semibold text-yellow-400 mb-2">Session ID</h3>
-              <p className="text-gray-300 mb-4">{order.session_id}</p>
+              <p className="text-xl font-semibold text-yellow-400 mb-2">
+                Table No. {order.table_no}
+              </p>
+              <p className="text-gray-300 mb-4">Ordered At: {order.ordered_at}</p>
+              <p className="text-gray-300 mb-4">Session ID: {order.session_id}</p>
               <h3 className="text-xl font-semibold text-yellow-400 mb-2">Total Amount</h3>
-              <p className="text-gray-300">${order.total_amount}</p>
+              <p className="text-gray-300">Nu. {order.total_amount} /-</p>
+
+              {/* Conditionally render payed_at or pending status */}
+              {order.payed_at ? (
+                <p className="text-green-400 font-semibold mt-4">
+                  Paid on {new Date(order.payed_at).toLocaleString()}
+                </p>
+              ) : (
+                <>
+                  <p className="text-red-500 font-semibold mt-4">Pending ...</p>
+                  <button
+                    className="mt-2 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering onClick of parent
+                      loadUpdateOrder(order.id); // Call function to update payed_at
+                    }}
+                  >
+                    Mark as Paid
+                  </button>
+                </>
+              )}
             </div>
           ))}
         </div>
-  
+    )}
+
         {/* Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex justify-end">
@@ -76,9 +115,9 @@ export default function OrderList(){
                         {orderItem.item_name}
                       </h3>
                       <p className="text-gray-300">Quantity: {orderItem.quantity}</p>
-                      <p className="text-gray-300">Price: ${orderItem.price}</p>
+                      <p className="text-gray-300">Price: Nu. {orderItem.price}</p>
                       <p className="text-gray-300 font-bold">
-                        Total: ${orderItem.total_prices}
+                        Total Price: Nu. {orderItem.total_prices}
                       </p>
                     </div>
                   ))}
@@ -90,5 +129,6 @@ export default function OrderList(){
           </div>
         )}
       </div>
+      
     );
   }
